@@ -1,12 +1,9 @@
-//=============================================================================
+//========= Copyright © 2008-2022, Team Sandpit, All rights reserved. ============
 //
-// Fool's GoldSource - GoldSource engine mock
+// Purpose: Mock engine for testing
 //
-// http://www.teamsandpit.com/
-//
-// Notes: engine mock code
-//
-//=============================================================================
+// $NoKeywords: $
+//================================================================================
 
 #include "foolsgoldsource.h"
 
@@ -47,9 +44,13 @@ namespace foolsgoldsource
 		this->engineFunctions.pfnLightStyle = pfnLightStyle;
 		this->engineFunctions.pfnRandomLong = pfnRandomLong;
 		this->engineFunctions.pfnAlertMessage = pfnAlertMessage;
+		this->engineFunctions.pfnPvAllocEntPrivateData = pfnPvAllocEntPrivateData;
 		this->engineFunctions.pfnAllocString = pfnAllocString;
 		this->engineFunctions.pfnPEntityOfEntOffset = pfnPEntityOfEntOffset;
 		this->engineFunctions.pfnPEntityOfEntIndex = pfnPEntityOfEntIndex;
+		this->engineFunctions.pfnFindEntityByVars = pfnFindEntityByVars;
+		this->engineFunctions.pfnGetModelPtr = pfnGetModelPtr;
+		this->engineFunctions.pfnNameForFunction = pfnNameForFunction;
 		this->engineFunctions.pfnServerPrint = pfnServerPrint;
 		this->engineFunctions.pfnGetGameDir = pfnGetGameDir;
 		this->engineFunctions.pfnIsDedicatedServer = pfnIsDedicatedServer;
@@ -80,7 +81,7 @@ namespace foolsgoldsource
 			// TODO: player spawning should happen later - and call one of the server-side callbacks?
 			shared_ptr<edict_t> edict = std::make_shared<edict_t>();
 			edict->free = 0;
-			edict->pvPrivateData = new (std::nothrow) char[1]; // TODO: should be CBasePlayer's data
+			edict->pvPrivateData = malloc(1); // TODO: should be CBasePlayer's data
 			edict->v.classname = ALLOC_STRING("player");
 			edict->v.netname = 0;
 			edict->v.flags = FL_CLIENT;
@@ -101,7 +102,7 @@ namespace foolsgoldsource
 
 			if( edict->pvPrivateData )
 			{
-				delete[] edict->pvPrivateData;
+				free( edict->pvPrivateData );
 				edict->pvPrivateData = nullptr;
 			}
 		}
@@ -165,6 +166,16 @@ namespace foolsgoldsource
 	void Engine::SetMaxClients( const unsigned int iMaxClients )
 	{
 		this->globalVariables.maxClients = (signed int)iMaxClients;
+	}
+
+	edict_t* Engine::CreateEdict()
+	{
+		shared_ptr<edict_t> edict = std::make_shared<edict_t>();
+		edict->free = 0;
+
+		this->edicts.push_back( edict );
+
+		return edict.get();
 	}
 
 	string Util::tolowercase( const string& str )
@@ -366,6 +377,13 @@ namespace foolsgoldsource
 		printf( "%s", buffer);
 	}
 
+	void* pfnPvAllocEntPrivateData( edict_t* pEdict, int32 cb )
+	{
+		pEdict->pvPrivateData = malloc( cb );
+
+		return pEdict->pvPrivateData;
+	}
+
 	int pfnAllocString(const char* szValue)
 	{
 		globalvars_t globalVars = gEngine.GetServerGlobalVariables();
@@ -408,6 +426,35 @@ namespace foolsgoldsource
 		}
 
 		return result;
+	}
+
+	edict_t* pfnFindEntityByVars( struct entvars_s* pvars )
+	{
+		edict_t* result = nullptr;
+
+		for (size_t i = 0; i < gEngine.edicts.size(); i++)
+		{
+			edict_t* current = gEngine.edicts[i].get();
+			if (&current->v == pvars)
+			{
+				result = current;
+				break;
+			}
+		}
+
+		return result;
+	}
+
+	void* pfnGetModelPtr( edict_t* pEdict )
+	{
+		// TODO: make it return something
+		return nullptr;
+	}
+
+	const char* pfnNameForFunction( uint32 function )
+	{
+		// TODO: implement
+		return nullptr;
 	}
 
 	void pfnServerPrint( const char* szMsg )

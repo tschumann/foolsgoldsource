@@ -1,12 +1,9 @@
-//=============================================================================
+//========= Copyright © 2008-2022, Team Sandpit, All rights reserved. ============
 //
-// Fool's GoldSource - GoldSource engine mock
+// Purpose: Mock engine for testing
 //
-// http://www.teamsandpit.com/
-//
-// Notes: engine mock code
-//
-//=============================================================================
+// $NoKeywords: $
+//================================================================================
 
 #ifndef _STUB_ENGINE_H_
 #define _STUB_ENGINE_H_
@@ -55,6 +52,8 @@ namespace foolsgoldsource
 		void SetIsCareerMatch( const bool bIsCareerMatch);
 
 		void SetMaxClients( const unsigned int iMaxClients );
+
+		edict_t* CreateEdict();
 
 		// below shouldn't be public because the game doesn't have access to them
 
@@ -126,11 +125,17 @@ namespace foolsgoldsource
 
 	void pfnAlertMessage( ALERT_TYPE atype, char *szFmt, ... );
 
+	void* pfnPvAllocEntPrivateData( edict_t* pEdict, int32 cb );
+
 	int pfnAllocString( const char* szValue );
 
 	edict_t* pfnPEntityOfEntOffset( int iEntOffset );
 
 	edict_t* pfnPEntityOfEntIndex( int iEntIndex );
+	edict_t* pfnFindEntityByVars( struct entvars_s* pvars );
+	void* pfnGetModelPtr( edict_t* pEdict );
+
+	const char* pfnNameForFunction( uint32 function );
 
 	void pfnServerPrint( const char* szMsg );
 
