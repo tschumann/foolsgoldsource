@@ -5,6 +5,8 @@
 // $NoKeywords: $
 //================================================================================
 
+#define CLIENT_DLL
+
 #include "../foolsgoldsource.h"
 
 enginefuncs_t g_engfuncs;

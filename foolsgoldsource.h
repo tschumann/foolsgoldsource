@@ -15,6 +15,14 @@
 #include <string>
 #include <vector>
 
+#ifdef CLIENT_DLL
+#define VECTOR_H // cl_dll/util_vector.h and dlls/vector.h define fairly similar classes - define the dlls/vector.h header guard to stop redefinition errors
+#include "hud.h"
+#include "VGUI_App.h"
+#include "VGUI_Panel.h"
+#include "VGUI_Scheme.h"
+#endif // CLIENT_DLL
+
 #include "extdll.h"
 #include "enginecallback.h"
 
@@ -33,6 +41,22 @@ namespace foolsgoldsource
 		int iType;
 	};
 
+	struct clientCommand_t
+	{
+		unsigned int iIndex;
+		string strCommandName;
+		void* pfnFunction;
+	};
+
+	struct userMessage_t
+	{
+		unsigned int iIndex;
+		string strMessageName;
+#ifdef CLIENT_DLL
+		pfnUserMsgHook pfnFunction;
+#endif // CLIENT_DLL
+	};
+
 	class Engine
 	{
 	public:
@@ -43,6 +67,10 @@ namespace foolsgoldsource
 		const globalvars_t GetServerGlobalVariables() const;
 		const DLL_FUNCTIONS GetDLLFunctions() const;
 		const NEW_DLL_FUNCTIONS GetNewDLLFunctions() const;
+
+#ifdef CLIENT_DLL
+		const cl_enginefunc_t GetClientEngineFunctions() const;
+#endif // CLIENT_DLL
 
 		const string GetGameDirectory() const;
 		void SetGameDirectory( const string& strGameDir );
@@ -67,6 +95,10 @@ namespace foolsgoldsource
 		int iMaxEdicts;
 		vector<string> serverCommands;
 
+		vector<shared_ptr<cvar_t>> clientCvars;
+		vector<clientCommand_t> clientCommands;
+		vector<userMessage_t> userMessages;
+
 		// TODO: how does the engine track this?
 		unsigned int iStringTableOffset;
 
@@ -76,6 +108,10 @@ namespace foolsgoldsource
 		globalvars_t globalVariables;
 		DLL_FUNCTIONS dllFunctions;
 		NEW_DLL_FUNCTIONS newDllFunctions;
+
+#ifdef CLIENT_DLL
+		cl_enginefunc_t clientEngineFunctions;
+#endif // CLIENT_DLL
 
 		string strGameDir;
 
@@ -157,6 +193,25 @@ namespace foolsgoldsource
 
 	// DLL_FUNCTIONS
 	void ServerActivate( edict_t* pEdictList, int edictCount, int clientMax );
+
+	// cl_enginefunc_t
+	struct cvar_s* pfnRegisterVariable( char* szName, char* szValue, int flags );
+
+	int pfnAddCommand( char* cmd_name, void (*pfnEngSrc_function)(void) );
+#ifdef CLIENT_DLL
+	int pfnHookUserMsg(char* szMsgName, pfnUserMsgHook pfn);
+#endif // CLIENT_DLL
+
+	const char* pfnGetGameDirectory( void );
+	struct cvar_s* pfnGetCvarPointer( const char* szName );
+
+	const char* pfnGetLevelName( void );
+
+	void Con_DPrintf( char* fmt, ... );
+
+#ifdef CLIENT_DLL
+	void* VGui_GetPanel();
+#endif // CLIENT_DLL
 }
 
 #endif // _STUB_ENGINE_H_

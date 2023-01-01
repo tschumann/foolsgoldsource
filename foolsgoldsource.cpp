@@ -64,9 +64,24 @@ namespace foolsgoldsource
 
 		this->dllFunctions.pfnServerActivate = ServerActivate;
 
+#ifdef CLIENT_DLL
+		this->clientEngineFunctions.pfnRegisterVariable = pfnRegisterVariable;
+		this->clientEngineFunctions.pfnAddCommand = pfnAddCommand;
+		this->clientEngineFunctions.pfnHookUserMsg = pfnHookUserMsg;
+		this->clientEngineFunctions.Con_DPrintf = Con_DPrintf;
+		this->clientEngineFunctions.pfnGetGameDirectory = pfnGetGameDirectory;
+		this->clientEngineFunctions.pfnGetCvarPointer = pfnGetCvarPointer;
+		this->clientEngineFunctions.pfnGetLevelName = pfnGetLevelName;
+		this->clientEngineFunctions.VGui_GetPanel = VGui_GetPanel;
+#endif // CLIENT_DLL
+
 		// install the engine functions and global variables
 		::g_engfuncs = this->engineFunctions;
 		::gpGlobals = &this->globalVariables;
+
+#ifdef CLIENT_DLL
+		::gEngfuncs = this->clientEngineFunctions;
+#endif // CLIENT_DLL
 
 		this->globalVariables.maxClients = 32;
 		this->globalVariables.pStringBase = new char[Engine::iStringTableSize];
@@ -111,6 +126,13 @@ namespace foolsgoldsource
 			delete[] this->globalVariables.pStringBase;
 			this->globalVariables.pStringBase = nullptr;
 		}
+
+		for( size_t i = 0; i < this->clientCvars.size(); i++ )
+		{
+			shared_ptr<cvar_t> cvar = this->clientCvars[i];
+
+			delete[] cvar->name;
+		}
 	}
 
 	const enginefuncs_t Engine::GetServerEngineFunctions() const
@@ -132,6 +154,13 @@ namespace foolsgoldsource
 	{
 		return this->newDllFunctions;
 	}
+
+#ifdef CLIENT_DLL
+	const cl_enginefunc_t Engine::GetClientEngineFunctions() const
+	{
+		return this->clientEngineFunctions;
+	}
+#endif // CLIENT_DLL
 
 	const string Engine::GetGameDirectory() const
 	{
@@ -480,7 +509,7 @@ namespace foolsgoldsource
 
 	unsigned short pfnPrecacheEvent( int type, const char* psz )
 	{
-		printf("Precaching %s\n", psz);
+		printf( "Precaching %s\n", psz );
 
 		event_t event;
 		// down-cast so that it's a valid index - should never have too many events anyway
@@ -548,4 +577,87 @@ namespace foolsgoldsource
 	void ServerActivate( edict_t* pEdictList, int edictCount, int clientMax )
 	{
 	}
+
+	struct cvar_s* pfnRegisterVariable( char* szName, char* szValue, int flags )
+	{
+		shared_ptr<cvar_t> cvar = std::make_shared<cvar_t>();
+		cvar->name = new char[16];
+		strncpy( cvar->name, szName, strlen(szName) );
+		cvar->name[strlen(szName)] = '\0';
+		cvar->value = atof( szValue );
+		cvar->flags = flags;
+
+		gEngine.clientCvars.push_back(cvar);
+
+		return cvar.get();
+	}
+
+	int pfnAddCommand( char* cmd_name, void (*pfnEngSrc_function)(void) )
+	{
+		clientCommand_t clientCommand;
+		clientCommand.iIndex = gEngine.userMessages.size();
+		clientCommand.strCommandName = string(cmd_name);
+		clientCommand.pfnFunction = pfnEngSrc_function;
+
+		gEngine.clientCommands.push_back(clientCommand);
+
+		return clientCommand.iIndex;
+	}
+#ifdef CLIENT_DLL
+	int pfnHookUserMsg( char* szMsgName, pfnUserMsgHook pfn )
+	{
+		userMessage_t userMessage;
+		userMessage.iIndex = gEngine.userMessages.size();
+		userMessage.strMessageName = string(szMsgName);
+		userMessage.pfnFunction = pfn;
+
+		gEngine.userMessages.push_back(userMessage);
+
+		return userMessage.iIndex;
+	}
+#endif // CLIENT_DLL
+
+	void Con_DPrintf( char* fmt, ... )
+	{
+		va_list argptr;
+		char buffer[1024];
+
+		va_start( argptr, fmt );
+		vsprintf( buffer, fmt, argptr );
+		va_end( argptr );
+
+		printf( "%s", buffer );
+	}
+
+	const char* pfnGetGameDirectory( void )
+	{
+		return gEngine.GetGameDirectory().c_str();
+	}
+
+	struct cvar_s* pfnGetCvarPointer( const char* szName )
+	{
+		for( size_t i = 0; i < gEngine.clientCvars.size(); i++ )
+		{
+			shared_ptr<cvar_t> cvar = gEngine.clientCvars[i];
+
+			if( !strcmp(cvar->name, szName) )
+			{
+				return cvar.get();
+			}
+		}
+
+		return nullptr;
+	}
+
+	const char* pfnGetLevelName( void )
+	{
+		return "maps/test.bsp";
+	}
+
+#ifdef CLIENT_DLL
+	void* VGui_GetPanel()
+	{
+		return new ::vgui::Panel();
+	}
+#endif // CLIENT_DLL
 }

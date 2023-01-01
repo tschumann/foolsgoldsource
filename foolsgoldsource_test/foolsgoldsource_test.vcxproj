@@ -180,6 +180,9 @@
       <Project>{53269903-04f3-41b6-a8a2-7e766ae38cc6}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\foolsgoldsource\hlsdk\vgui.lib" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

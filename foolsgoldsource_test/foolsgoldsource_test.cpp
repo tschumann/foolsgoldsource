@@ -8,6 +8,8 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 
+#define CLIENT_DLL
+
 #include "../foolsgoldsource.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -58,6 +60,16 @@ namespace foolsgoldsourcetest
 
 			::foolsgoldsource::pfnGetGameDir( szGameDirectory );
 			Assert::AreEqual( "gearbox", szGameDirectory );
+		}
+
+		TEST_METHOD(TestGetCvarPointer)
+		{
+			cvar_t* hello = ::foolsgoldsource::pfnRegisterVariable("hello", "1", 0);
+			cvar_t* world = ::foolsgoldsource::pfnRegisterVariable("world", "0", 0);
+
+			Assert::IsTrue(hello == ::foolsgoldsource::pfnGetCvarPointer("hello"));
+			Assert::IsTrue(world == ::foolsgoldsource::pfnGetCvarPointer("world"));
+			Assert::IsNull(::foolsgoldsource::pfnGetCvarPointer("test"));
 		}
 	};
 }
