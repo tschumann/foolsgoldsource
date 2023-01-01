@@ -1,0 +1,32 @@
+//========= Copyright © 2008-2022, Team Sandpit, All rights reserved. ============
+//
+// Purpose: Visual Studio CppUnit support for solutions that don't have a separate unit test project.
+//          In an ideal world this shouldn't be needed but many Half-Life mods and plugins don't have
+//          a separate unit test project in the solution and creating one isn't always simple - this
+//          helps allow unit tests to exist as part of the main project rather than forcing the creation
+//          of a separate unit test project.
+//
+// $NoKeywords: $
+//================================================================================
+
+#ifndef __VSCU_TEST_H__
+#define __VSCU_TEST_H__
+
+#ifdef _MSC_VER
+
+#include "CppUnitTest.h"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+// create this file before compiling for unit testing then delete it after compilation for testing
+#if !__has_include("run_tests.hxx")
+
+// stub out TEST_METHOD when building normally because CppUnitTestFramework does something strange and breaks the engine's ability to load the .dll
+#undef TEST_METHOD
+#define TEST_METHOD(methodName) static const void* test##methodName() { return nullptr; } void methodName()
+
+#endif // !__has_include("run_tests.hxx")
+
+#endif // _MSC_VER
+
+#endif // __VSCU_TEST_H__

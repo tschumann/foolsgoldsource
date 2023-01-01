@@ -4,6 +4,14 @@ Fool's GoldSource
 Mock GoldSource engine for unit testing Half-Life mods and plugins.
 
 
+How to use
+----------
+
+Import foolsgoldsource as a subproject and include `foolsgoldsource.cpp` and `foolsgoldsource.h` as part of the project.
+
+If you don't have a separate unit test project include `vscu_test.h` as well.
+
+
 Testing
 -------
 
