@@ -1,4 +1,4 @@
-//========= Copyright © 2008-2022, Team Sandpit, All rights reserved. ============
+//========= Copyright © 2008-2023, Team Sandpit, All rights reserved. ============
 //
 // Purpose: Visual Studio CppUnit support for solutions that don't have a separate unit test project.
 //          In an ideal world this shouldn't be needed but many Half-Life mods and plugins don't have

@@ -1,3 +1,10 @@
+//========= Copyright © 2008-2023, Team Sandpit, All rights reserved. ============
+//
+// Purpose: Empty program to test compilation
+//
+// $NoKeywords: $
+//================================================================================
+
 #include "../foolsgoldsource.h"
 
 enginefuncs_t g_engfuncs;

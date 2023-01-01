@@ -1,3 +1,10 @@
+//========= Copyright © 2008-2023, Team Sandpit, All rights reserved. ============
+//
+// Purpose: Mock GoldSource engine tests
+//
+// $NoKeywords: $
+//================================================================================
+
 #include "pch.h"
 #include "CppUnitTest.h"
 
