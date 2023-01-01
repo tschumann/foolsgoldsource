@@ -384,13 +384,13 @@ namespace foolsgoldsource
 		return pEdict->pvPrivateData;
 	}
 
-	int pfnAllocString(const char* szValue)
+	int pfnAllocString( const char* szValue )
 	{
 		globalvars_t globalVars = gEngine.GetServerGlobalVariables();
 		// get the next unassigned part of the string table
 		const char* pCurrentOffset = globalVars.pStringBase + gEngine.iStringTableOffset;
 		// copy the new string to the next unassigned part of the string table
-		strcpy((char*)pCurrentOffset, szValue);
+		strncpy( (char*)pCurrentOffset, szValue, strlen(szValue) );
 
 		// get the newly assigned string's location
 		int iCurrentOffset = gEngine.iStringTableOffset;
@@ -464,7 +464,7 @@ namespace foolsgoldsource
 
 	void pfnGetGameDir( char *szGetGameDir )
 	{
-		strcpy( szGetGameDir, gEngine.GetGameDirectory().c_str() );
+		strncpy( szGetGameDir, gEngine.GetGameDirectory().c_str(), gEngine.GetGameDirectory().size() );
 	}
 
 	int pfnIsDedicatedServer( void )
