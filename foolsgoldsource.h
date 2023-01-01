@@ -53,6 +53,8 @@ namespace foolsgoldsource
 
 		void SetMaxClients( const unsigned int iMaxClients );
 
+		const char* GetString( string_t offset );
+
 		edict_t* CreateEdict();
 
 		// below shouldn't be public because the game doesn't have access to them

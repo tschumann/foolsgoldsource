@@ -3,6 +3,15 @@ Fool's GoldSource
 
 Mock GoldSource engine for unit testing Half-Life mods and plugins.
 
+
+Testing
+-------
+
+```
+powershell ./test.ps1
+```
+
+
 License
 -------
 

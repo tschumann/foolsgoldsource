@@ -168,6 +168,11 @@ namespace foolsgoldsource
 		this->globalVariables.maxClients = (signed int)iMaxClients;
 	}
 
+	const char* Engine::GetString( string_t offset )
+	{
+		return (const char*)(gpGlobals->pStringBase + (unsigned int)(offset));
+	}
+
 	edict_t* Engine::CreateEdict()
 	{
 		shared_ptr<edict_t> edict = std::make_shared<edict_t>();
@@ -394,8 +399,8 @@ namespace foolsgoldsource
 
 		// get the newly assigned string's location
 		int iCurrentOffset = gEngine.iStringTableOffset;
-		// update the location of the next unassigned part of the string table
-		gEngine.iStringTableOffset += strlen(szValue);
+		// update the location of the next unassigned part of the string table (add 1 to terminate the string)
+		gEngine.iStringTableOffset += strlen(szValue) + 1;
 		// return the newly assigned string's location
 		return iCurrentOffset;
 	}
@@ -432,10 +437,11 @@ namespace foolsgoldsource
 	{
 		edict_t* result = nullptr;
 
-		for (size_t i = 0; i < gEngine.edicts.size(); i++)
+		for( size_t i = 0; i < gEngine.edicts.size(); i++ )
 		{
 			edict_t* current = gEngine.edicts[i].get();
-			if (&current->v == pvars)
+
+			if( &current->v == pvars )
 			{
 				result = current;
 				break;

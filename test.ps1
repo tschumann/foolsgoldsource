@@ -1,3 +1,5 @@
+$ErrorActionPreference = "Stop"
+
 # get the location of this file
 $scriptpath = $MyInvocation.MyCommand.Path
 # get the directory path to this file
