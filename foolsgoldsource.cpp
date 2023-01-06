@@ -65,6 +65,8 @@ namespace foolsgoldsource
 		this->dllFunctions.pfnServerActivate = ServerActivate;
 
 #ifdef CLIENT_DLL
+		this->clientEngineFunctions.pTriAPI = new triangleapi_t();
+
 		this->clientEngineFunctions.pfnRegisterVariable = pfnRegisterVariable;
 		this->clientEngineFunctions.pfnAddCommand = pfnAddCommand;
 		this->clientEngineFunctions.pfnHookUserMsg = pfnHookUserMsg;
@@ -73,6 +75,9 @@ namespace foolsgoldsource
 		this->clientEngineFunctions.pfnGetCvarPointer = pfnGetCvarPointer;
 		this->clientEngineFunctions.pfnGetLevelName = pfnGetLevelName;
 		this->clientEngineFunctions.VGui_GetPanel = VGui_GetPanel;
+		this->clientEngineFunctions.pTriAPI->CullFace = CullFace;
+		this->clientEngineFunctions.pTriAPI->Fog = Fog;
+		this->clientEngineFunctions.pTriAPI->FogParams = FogParams;
 #endif // CLIENT_DLL
 
 		// install the engine functions and global variables
@@ -133,6 +138,10 @@ namespace foolsgoldsource
 
 			delete[] cvar->name;
 		}
+
+#ifdef CLIENT_DLL
+		delete this->clientEngineFunctions.pTriAPI;
+#endif // CLIENT_DLL
 	}
 
 	const enginefuncs_t Engine::GetServerEngineFunctions() const
@@ -190,6 +199,28 @@ namespace foolsgoldsource
 	void Engine::SetIsCareerMatch( const bool bIsCareerMatch )
 	{
 		this->bIsCareerMatch = bIsCareerMatch;
+	}
+
+#ifdef CLIENT_DLL
+	TRICULLSTYLE Engine::GetTriCullStyle() const
+	{
+		return this->triCullStyle;
+	}
+
+	void Engine::SetTriCullStyle( const TRICULLSTYLE triCullStyle )
+	{
+		this->triCullStyle = triCullStyle;
+	}
+#endif // CLIENT_DLL
+
+	bool Engine::GetIsFogOn() const
+	{
+		return this->bIsFogOn;
+	}
+
+	void Engine::SetIsFogOn( const bool bIsFogOn )
+	{
+		this->bIsFogOn = bIsFogOn;
 	}
 
 	void Engine::SetMaxClients( const unsigned int iMaxClients )
@@ -603,6 +634,7 @@ namespace foolsgoldsource
 
 		return clientCommand.iIndex;
 	}
+
 #ifdef CLIENT_DLL
 	int pfnHookUserMsg( char* szMsgName, pfnUserMsgHook pfn )
 	{
@@ -659,5 +691,19 @@ namespace foolsgoldsource
 	{
 		return new ::vgui::Panel();
 	}
+
+	void CullFace( TRICULLSTYLE style )
+	{
+		gEngine.SetTriCullStyle( style );
+	}
 #endif // CLIENT_DLL
+
+	void Fog( float flFogColor[3], float flStart, float flEnd, int bOn )
+	{
+		gEngine.SetIsFogOn( bOn != 0 );
+	}
+
+	void FogParams( float flDensity, int iFogSkybox )
+	{
+	}
 }

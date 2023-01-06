@@ -25,6 +25,18 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 #undef TEST_METHOD
 #define TEST_METHOD(methodName) static const void* test##methodName() { return nullptr; } void methodName()
 
+// stub out BEGIN_TEST_METHOD_ATTRIBUTE when building normally otherwise the tests won't compile
+#undef BEGIN_TEST_METHOD_ATTRIBUTE
+#define BEGIN_TEST_METHOD_ATTRIBUTE(methodName)
+
+// stub out TEST_IGNORE when building normally otherwise the tests won't compile
+#undef TEST_IGNORE
+#define TEST_IGNORE()
+
+// stub out END_TEST_METHOD_ATTRIBUTE when building normally otherwise the tests won't compile
+#undef END_TEST_METHOD_ATTRIBUTE
+#define END_TEST_METHOD_ATTRIBUTE()
+
 #endif // !__has_include("run_tests.hxx")
 
 #endif // _MSC_VER

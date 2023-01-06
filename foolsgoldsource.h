@@ -18,6 +18,7 @@
 #ifdef CLIENT_DLL
 #define VECTOR_H // cl_dll/util_vector.h and dlls/vector.h define fairly similar classes - define the dlls/vector.h header guard to stop redefinition errors
 #include "hud.h"
+#include "triangleapi.h"
 #include "VGUI_App.h"
 #include "VGUI_Panel.h"
 #include "VGUI_Scheme.h"
@@ -77,9 +78,17 @@ namespace foolsgoldsource
 		bool GetIsDedicatedServer() const;
 		void SetIsDedicatedServer( const bool bIsDedicatedServer );
 		bool GetIsCareerMatch() const;
-		void SetIsCareerMatch( const bool bIsCareerMatch);
+		void SetIsCareerMatch( const bool bIsCareerMatch );
 
 		void SetMaxClients( const unsigned int iMaxClients );
+
+#ifdef CLIENT_DLL
+		TRICULLSTYLE GetTriCullStyle() const;
+		void SetTriCullStyle( const TRICULLSTYLE triCullStyle );
+#endif // CLIENT_DLL
+
+		bool GetIsFogOn() const;
+		void SetIsFogOn( const bool bIsFogOn );
 
 		const char* GetString( string_t offset );
 
@@ -117,6 +126,11 @@ namespace foolsgoldsource
 
 		bool bIsDedicatedServer;
 		bool bIsCareerMatch;
+
+#ifdef CLIENT_DLL
+		TRICULLSTYLE triCullStyle;
+#endif // CLIENT_DLL
+		bool bIsFogOn;
 	};
 
 	class Util
@@ -202,15 +216,21 @@ namespace foolsgoldsource
 	int pfnHookUserMsg(char* szMsgName, pfnUserMsgHook pfn);
 #endif // CLIENT_DLL
 
+	void Con_DPrintf(char* fmt, ...);
+
 	const char* pfnGetGameDirectory( void );
 	struct cvar_s* pfnGetCvarPointer( const char* szName );
 
 	const char* pfnGetLevelName( void );
 
-	void Con_DPrintf( char* fmt, ... );
-
 #ifdef CLIENT_DLL
 	void* VGui_GetPanel();
+
+	void CullFace( TRICULLSTYLE style );
+
+	void Fog( float flFogColor[3], float flStart, float flEnd, int bOn );
+
+	void FogParams( float flDensity, int iFogSkybox );
 #endif // CLIENT_DLL
 }
 
