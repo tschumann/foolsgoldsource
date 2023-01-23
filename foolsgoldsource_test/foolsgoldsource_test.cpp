@@ -33,9 +33,9 @@ namespace foolsgoldsourcetest
 
 		TEST_METHOD(TestFindEntityByVars)
 		{
-			edict_t* pEdict1 = ::foolsgoldsource::gEngine.CreateEdict();
-			edict_t* pEdict2 = ::foolsgoldsource::gEngine.CreateEdict();
-			edict_t* pEdict3 = ::foolsgoldsource::gEngine.CreateEdict();
+			edict_t* pEdict1 = ::foolsgoldsource::pfnCreateEntity();
+			edict_t* pEdict2 = ::foolsgoldsource::pfnCreateEntity();
+			edict_t* pEdict3 = ::foolsgoldsource::pfnCreateEntity();
 
 			Assert::IsTrue( pEdict1 == ::foolsgoldsource::pfnFindEntityByVars( &pEdict1->v ) );
 			Assert::IsTrue( pEdict2 != ::foolsgoldsource::pfnFindEntityByVars( &pEdict1->v ) );

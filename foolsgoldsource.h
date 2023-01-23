@@ -92,8 +92,6 @@ namespace foolsgoldsource
 
 		const char* GetString( string_t offset );
 
-		edict_t* CreateEdict();
-
 		// below shouldn't be public because the game doesn't have access to them
 
 		// TODO: below be in some server struct?
@@ -161,6 +159,8 @@ namespace foolsgoldsource
 	edict_t* pfnFindEntityInSphere( edict_t* pEdictStartSearchAfter, const float* org, float rad );
 	edict_t* pfnFindClientInPVS( edict_t* pEdict );
 	edict_t* pfnEntitiesInPVS( edict_t* pplayer );
+
+	edict_t* pfnCreateEntity( void );
 
 	void pfnSetOrigin( edict_t* e, const float* rgflOrigin );
 	void pfnEmitSound( edict_t* entity, int channel, const char* sample, float volume, float attenuation, int fFlags, int pitch );

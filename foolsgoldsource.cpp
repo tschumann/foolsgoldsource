@@ -35,6 +35,7 @@ namespace foolsgoldsource
 		this->engineFunctions.pfnFindEntityInSphere = pfnFindEntityInSphere;
 		this->engineFunctions.pfnFindClientInPVS = pfnFindClientInPVS;
 		this->engineFunctions.pfnEntitiesInPVS = pfnEntitiesInPVS;
+		this->engineFunctions.pfnCreateEntity = pfnCreateEntity;
 		this->engineFunctions.pfnSetOrigin = pfnSetOrigin;
 		this->engineFunctions.pfnEmitSound = pfnEmitSound;
 		this->engineFunctions.pfnEmitAmbientSound = pfnEmitAmbientSound;
@@ -233,16 +234,6 @@ namespace foolsgoldsource
 		return (const char*)(gpGlobals->pStringBase + (unsigned int)(offset));
 	}
 
-	edict_t* Engine::CreateEdict()
-	{
-		shared_ptr<edict_t> edict = std::make_shared<edict_t>();
-		edict->free = 0;
-
-		this->edicts.push_back( edict );
-
-		return edict.get();
-	}
-
 	string Util::tolowercase( const string& str )
 	{
 		string lowerCased = str;
@@ -283,23 +274,6 @@ namespace foolsgoldsource
 	{
 		// TODO: excessive calls will overflow the string table - is this what the engine does?
 		e->v.model = ALLOC_STRING(m);
-	}
-
-	void pfnSetOrigin(edict_t* e, const float* rgflOrigin)
-	{
-		e->v.origin[0] = rgflOrigin[0];
-		e->v.origin[1] = rgflOrigin[1];
-		e->v.origin[2] = rgflOrigin[2];
-	}
-
-	void pfnEmitSound(edict_t* entity, int channel, const char* sample, float volume, float attenuation, int fFlags, int pitch)
-	{
-		// TODO: check if sound exists
-	}
-
-	void pfnEmitAmbientSound(edict_t* entity, float* pos, const char* samp, float vol, float attenuation, int fFlags, int pitch)
-	{
-		// TODO: check if sound exists
 	}
 
 	int pfnModelIndex(const char* m)
@@ -403,6 +377,33 @@ namespace foolsgoldsource
 	edict_t* pfnEntitiesInPVS( edict_t* pplayer )
 	{
 		return nullptr;
+	}
+
+	edict_t* pfnCreateEntity()
+	{
+		shared_ptr<edict_t> edict = std::make_shared<edict_t>();
+		edict->free = 0;
+
+		gEngine.edicts.push_back(edict);
+
+		return edict.get();
+	}
+
+	void pfnSetOrigin( edict_t* e, const float* rgflOrigin )
+	{
+		e->v.origin[0] = rgflOrigin[0];
+		e->v.origin[1] = rgflOrigin[1];
+		e->v.origin[2] = rgflOrigin[2];
+	}
+
+	void pfnEmitSound( edict_t* entity, int channel, const char* sample, float volume, float attenuation, int fFlags, int pitch )
+	{
+		// TODO: check if sound exists
+	}
+
+	void pfnEmitAmbientSound( edict_t* entity, float* pos, const char* samp, float vol, float attenuation, int fFlags, int pitch )
+	{
+		// TODO: check if sound exists
 	}
 
 	void pfnTraceSphere( const float* v1, const float* v2, int fNoMonsters, float radius, edict_t* pentToSkip, TraceResult* ptr )
