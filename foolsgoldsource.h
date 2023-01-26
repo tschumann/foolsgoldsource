@@ -18,6 +18,7 @@
 #ifdef CLIENT_DLL
 #define VECTOR_H // cl_dll/util_vector.h and dlls/vector.h define fairly similar classes - define the dlls/vector.h header guard to stop redefinition errors
 #include "hud.h"
+#include "r_studioint.h"
 #include "triangleapi.h"
 #include "VGUI_App.h"
 #include "VGUI_Panel.h"
@@ -32,6 +33,9 @@ using std::endl;
 using std::shared_ptr;
 using std::string;
 using std::vector;
+
+const int RENDERER_SOFTWARE = 0;
+const int RENDERER_OPENGL = 1;
 
 namespace foolsgoldsource
 {
@@ -90,6 +94,9 @@ namespace foolsgoldsource
 		bool GetIsFogOn() const;
 		void SetIsFogOn( const bool bIsFogOn );
 
+		int GetRenderer() const;
+		void SetRenderer( const int iRenderer );
+
 		const char* GetString( string_t offset );
 
 		// below shouldn't be public because the game doesn't have access to them
@@ -118,6 +125,7 @@ namespace foolsgoldsource
 
 #ifdef CLIENT_DLL
 		cl_enginefunc_t clientEngineFunctions;
+		engine_studio_api_t engineStudioFunctions;
 #endif // CLIENT_DLL
 
 		string strGameDir;
@@ -129,6 +137,7 @@ namespace foolsgoldsource
 		TRICULLSTYLE triCullStyle;
 #endif // CLIENT_DLL
 		bool bIsFogOn;
+		int iRenderer;
 	};
 
 	class Util
@@ -213,7 +222,7 @@ namespace foolsgoldsource
 
 	int pfnAddCommand( char* cmd_name, void (*pfnEngSrc_function)(void) );
 #ifdef CLIENT_DLL
-	int pfnHookUserMsg(char* szMsgName, pfnUserMsgHook pfn);
+	int pfnHookUserMsg( char* szMsgName, pfnUserMsgHook pfn );
 #endif // CLIENT_DLL
 
 	void Con_DPrintf(char* fmt, ...);
@@ -227,11 +236,21 @@ namespace foolsgoldsource
 	void* VGui_GetPanel();
 
 	void CullFace( TRICULLSTYLE style );
-
+#endif // CLIENT_DLL
 	void Fog( float flFogColor[3], float flStart, float flEnd, int bOn );
 
 	void FogParams( float flDensity, int iFogSkybox );
-#endif // CLIENT_DLL
+
+	// engine_studio_api_t
+	struct model_s* GetChromeSprite( void );
+	void GetModelCounters( int** s, int** a );
+
+	float**** StudioGetBoneTransform( void );
+	float**** StudioGetLightTransform( void );
+	float*** StudioGetAliasTransform( void );
+	float*** StudioGetRotationMatrix( void );
+
+	int IsHardware( void );
 }
 
 #endif // _STUB_ENGINE_H_

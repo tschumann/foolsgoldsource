@@ -9,11 +9,22 @@
 
 extern globalvars_t* gpGlobals;
 
+#ifdef CLIENT_DLL
+extern engine_studio_api_t IEngineStudio;
+#endif // CLIENT_DLL
+
 namespace foolsgoldsource
 {
 	Engine gEngine;
 
-	Engine::Engine()
+	Engine::Engine() :
+		bIsDedicatedServer( false ),
+		bIsCareerMatch( false ),
+#ifdef CLIENT_DLL
+		triCullStyle( TRI_FRONT ),
+#endif // CLIENT_DLL
+		bIsFogOn( false ),
+		iRenderer( RENDERER_SOFTWARE )
 	{
 		// set up all the engine functions so they can be used
 		this->engineFunctions.pfnPrecacheModel = pfnPrecacheModel;
@@ -79,6 +90,15 @@ namespace foolsgoldsource
 		this->clientEngineFunctions.pTriAPI->CullFace = CullFace;
 		this->clientEngineFunctions.pTriAPI->Fog = Fog;
 		this->clientEngineFunctions.pTriAPI->FogParams = FogParams;
+
+		this->engineStudioFunctions.GetCvar = pfnGetCvarPointer;
+		this->engineStudioFunctions.GetChromeSprite = GetChromeSprite;
+		this->engineStudioFunctions.GetModelCounters = GetModelCounters;
+		this->engineStudioFunctions.StudioGetBoneTransform = StudioGetBoneTransform;
+		this->engineStudioFunctions.StudioGetLightTransform = StudioGetLightTransform;
+		this->engineStudioFunctions.StudioGetAliasTransform = StudioGetAliasTransform;
+		this->engineStudioFunctions.StudioGetRotationMatrix = StudioGetRotationMatrix;
+		this->engineStudioFunctions.IsHardware = IsHardware;
 #endif // CLIENT_DLL
 
 		// install the engine functions and global variables
@@ -87,8 +107,10 @@ namespace foolsgoldsource
 
 #ifdef CLIENT_DLL
 		::gEngfuncs = this->clientEngineFunctions;
+		::IEngineStudio = this->engineStudioFunctions;
 #endif // CLIENT_DLL
 
+		// initialise the engine variables
 		this->globalVariables.maxClients = 32;
 		this->globalVariables.pStringBase = new char[Engine::iStringTableSize];
 		memset( const_cast<char*>(this->globalVariables.pStringBase), 0, Engine::iStringTableSize );
@@ -110,9 +132,12 @@ namespace foolsgoldsource
 		}
 
 		this->strGameDir = "valve";
-		this->bIsDedicatedServer = false;
 
 		this->iMaxEdicts = 1024;
+
+		pfnRegisterVariable( const_cast<char *>("cl_himodels"), const_cast<char *>("0"), 0 );
+		pfnRegisterVariable( const_cast<char *>("developer"), const_cast<char *>("1"), 0 );
+		pfnRegisterVariable( const_cast<char *>("r_drawentities"), const_cast<char *>("1"), 0 );
 	}
 
 	Engine::~Engine() noexcept
@@ -222,6 +247,16 @@ namespace foolsgoldsource
 	void Engine::SetIsFogOn( const bool bIsFogOn )
 	{
 		this->bIsFogOn = bIsFogOn;
+	}
+
+	int Engine::GetRenderer() const
+	{
+		return this->iRenderer;
+	}
+
+	void Engine::SetRenderer( const int iRenderer )
+	{
+		this->iRenderer = iRenderer;
 	}
 
 	void Engine::SetMaxClients( const unsigned int iMaxClients )
@@ -673,7 +708,7 @@ namespace foolsgoldsource
 		{
 			shared_ptr<cvar_t> cvar = gEngine.clientCvars[i];
 
-			if( !strcmp(cvar->name, szName) )
+			if( !strcmp( cvar->name, szName ) )
 			{
 				return cvar.get();
 			}
@@ -706,5 +741,39 @@ namespace foolsgoldsource
 
 	void FogParams( float flDensity, int iFogSkybox )
 	{
+	}
+
+	struct model_s* GetChromeSprite( void )
+	{
+		return nullptr;
+	}
+
+	void GetModelCounters( int** s, int** a )
+	{
+	}
+
+	float**** StudioGetBoneTransform( void )
+	{
+		return nullptr;
+	}
+
+	float**** StudioGetLightTransform( void )
+	{
+		return nullptr;
+	}
+
+	float*** StudioGetAliasTransform( void )
+	{
+		return nullptr;
+	}
+
+	float*** StudioGetRotationMatrix( void )
+	{
+		return nullptr;
+	}
+
+	int IsHardware( void )
+	{
+		return gEngine.GetRenderer();
 	}
 }

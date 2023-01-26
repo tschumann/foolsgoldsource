@@ -21,7 +21,7 @@ Include `foolsgoldsource.h` in your test files, and if you don't have a separate
 
 How it works
 ------------
-`foolsgoldsource.cpp` instantiates a global variable whose constructor populates `g_engfuncs`, `gpGlobals` and `gEngfuncs` so that these SDK globals resolve in tests.
+`foolsgoldsource.cpp` instantiates a global variable whose constructor populates `gEngfuncs`, `IEngineStudio`, `g_engfuncs` and `gpGlobals` so that these SDK globals resolve in tests.
 
 
 Testing

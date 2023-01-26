@@ -20,6 +20,12 @@ namespace foolsgoldsourcetest
 	{
 	public:
 
+		TEST_METHOD_INITIALIZE(SetUp)
+		{
+			::foolsgoldsource::gEngine.SetIsFogOn( false );
+			::foolsgoldsource::gEngine.SetRenderer( RENDERER_OPENGL );
+		}
+
 		TEST_METHOD(TestAllocString)
 		{
 			string_t hello = ::foolsgoldsource::pfnAllocString( "hello" );
@@ -64,12 +70,30 @@ namespace foolsgoldsourcetest
 
 		TEST_METHOD(TestGetCvarPointer)
 		{
-			cvar_t* hello = ::foolsgoldsource::pfnRegisterVariable("hello", "1", 0);
-			cvar_t* world = ::foolsgoldsource::pfnRegisterVariable("world", "0", 0);
+			cvar_t* hello = ::foolsgoldsource::pfnRegisterVariable( "hello", "1", 0 );
+			cvar_t* world = ::foolsgoldsource::pfnRegisterVariable( "world", "0", 0 );
 
-			Assert::IsTrue(hello == ::foolsgoldsource::pfnGetCvarPointer("hello"));
-			Assert::IsTrue(world == ::foolsgoldsource::pfnGetCvarPointer("world"));
-			Assert::IsNull(::foolsgoldsource::pfnGetCvarPointer("test"));
+			Assert::IsTrue( hello == ::foolsgoldsource::pfnGetCvarPointer( "hello" ) );
+			Assert::IsTrue( world == ::foolsgoldsource::pfnGetCvarPointer( "world" ) );
+			Assert::IsNull( ::foolsgoldsource::pfnGetCvarPointer( "test" ) );
+		}
+
+		TEST_METHOD(TestFog)
+		{
+			float fColors[3] = { 0.0f, 0.0f, 0.0f };
+
+			::foolsgoldsource::Fog( fColors, 0.0f, 0.0f, 1 );
+			Assert::IsTrue( ::foolsgoldsource::gEngine.GetIsFogOn() );
+			::foolsgoldsource::Fog( fColors, 0.0f, 0.0f, 0 );
+			Assert::IsFalse( ::foolsgoldsource::gEngine.GetIsFogOn() );
+		}
+
+		TEST_METHOD(TestIsHardware)
+		{
+			::foolsgoldsource::gEngine.SetRenderer( RENDERER_SOFTWARE );
+			Assert::AreEqual( 0, ::foolsgoldsource::IsHardware() );
+			::foolsgoldsource::gEngine.SetRenderer( RENDERER_OPENGL );
+			Assert::AreEqual( 1, ::foolsgoldsource::IsHardware() );
 		}
 	};
 }
