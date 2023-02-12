@@ -124,7 +124,6 @@ namespace foolsgoldsource
 			// TODO: player spawning should happen later - and call one of the server-side callbacks?
 			shared_ptr<edict_t> edict = std::make_shared<edict_t>();
 			edict->free = 0;
-			edict->pvPrivateData = malloc(1); // TODO: should be CBasePlayer's data
 			edict->v.classname = ALLOC_STRING("player");
 			edict->v.netname = 0;
 			edict->v.flags = FL_CLIENT;
@@ -142,16 +141,6 @@ namespace foolsgoldsource
 
 	Engine::~Engine() noexcept
 	{
-		for( unsigned int i = 0; i < this->edicts.size(); i++ )
-		{
-			shared_ptr<edict_t> edict = this->edicts[i];
-
-			if( edict->pvPrivateData )
-			{
-				free( edict->pvPrivateData );
-				edict->pvPrivateData = nullptr;
-			}
-		}
 		if( this->globalVariables.pStringBase )
 		{
 			delete[] this->globalVariables.pStringBase;
