@@ -77,7 +77,7 @@ namespace foolsgoldsource
 		this->dllFunctions.pfnServerActivate = ServerActivate;
 
 #ifdef CLIENT_DLL
-		this->clientEngineFunctions.pTriAPI = new triangleapi_t();
+		this->clientEngineFunctions.pTriAPI = &triangleApi;
 
 		this->clientEngineFunctions.pfnRegisterVariable = pfnRegisterVariable;
 		this->clientEngineFunctions.pfnAddCommand = pfnAddCommand;
@@ -153,10 +153,6 @@ namespace foolsgoldsource
 
 			delete[] cvar->name;
 		}
-
-#ifdef CLIENT_DLL
-		delete this->clientEngineFunctions.pTriAPI;
-#endif // CLIENT_DLL
 	}
 
 	const enginefuncs_t Engine::GetServerEngineFunctions() const

@@ -124,6 +124,7 @@ namespace foolsgoldsource
 		NEW_DLL_FUNCTIONS newDllFunctions;
 
 #ifdef CLIENT_DLL
+		triangleapi_t triangleApi;
 		cl_enginefunc_t clientEngineFunctions;
 		engine_studio_api_t engineStudioFunctions;
 #endif // CLIENT_DLL
