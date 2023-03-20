@@ -21,6 +21,15 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 // create this file before compiling for unit testing then delete it after compilation for testing
 #if !__has_include("run_tests.hxx")
 
+#undef TEST_CLASS
+#define TEST_CLASS(className) class className
+
+#undef TEST_METHOD_INITIALIZE
+#define TEST_METHOD_INITIALIZE(methodName) void methodName()
+
+#undef TEST_METHOD_CLEANUP
+#define TEST_METHOD_CLEANUP(methodName) void methodName()
+
 // stub out TEST_METHOD when building normally because CppUnitTestFramework does something strange and breaks the engine's ability to load the .dll
 #undef TEST_METHOD
 #define TEST_METHOD(methodName) static const void* test##methodName() { return nullptr; } void methodName()
