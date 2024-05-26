@@ -62,6 +62,20 @@ namespace foolsgoldsource
 #endif // CLIENT_DLL
 	};
 
+	enum class EngineType
+	{
+		ENGINE_SDKv10,
+		ENGINE_SDKv20,
+		ENGINE_SDKv21,
+		ENGINE_SDKv22,
+		ENGINE_SDKv23,
+		ENGINE_STEAM,
+		ENGINE_CRYOFFEAR,
+		ENGINE_CROSSPLATFORM,
+		ENGINE_SVENGINE,
+		ENGINE_25ANNIVERSARY
+	};
+
 	class Engine
 	{
 	public:
@@ -128,6 +142,8 @@ namespace foolsgoldsource
 		cl_enginefunc_t clientEngineFunctions;
 		engine_studio_api_t engineStudioFunctions;
 #endif // CLIENT_DLL
+
+		EngineType engineType;
 
 		string strGameDir;
 

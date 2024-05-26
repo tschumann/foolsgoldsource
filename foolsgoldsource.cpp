@@ -18,6 +18,7 @@ namespace foolsgoldsource
 	Engine gEngine;
 
 	Engine::Engine() :
+		engineType( EngineType::ENGINE_25ANNIVERSARY ),
 		bIsDedicatedServer( false ),
 		bIsCareerMatch( false ),
 #ifdef CLIENT_DLL
