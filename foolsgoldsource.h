@@ -82,9 +82,11 @@ namespace foolsgoldsource
 		Engine();
 		~Engine() noexcept;
 
+		void Reset();
+
 		const enginefuncs_t GetServerEngineFunctions() const;
 		const globalvars_t GetServerGlobalVariables() const;
-		const DLL_FUNCTIONS GetDLLFunctions() const;
+		const DLL_FUNCTIONS *GetDLLFunctions() const;
 		const NEW_DLL_FUNCTIONS GetNewDLLFunctions() const;
 
 #ifdef CLIENT_DLL
@@ -121,11 +123,15 @@ namespace foolsgoldsource
 		vector<string> sounds;
 		vector<event_t> events;
 		int iMaxEdicts;
-		vector<string> serverCommands;
+		vector<string> executedClientCommands;
+		vector<string> executedServerCommands;
 
 		vector<shared_ptr<cvar_t>> clientCvars;
 		vector<clientCommand_t> clientCommands;
 		vector<userMessage_t> userMessages;
+
+		// TODO: should probably be private
+		unsigned int iCallsToClientCommand;
 
 		// TODO: how does the engine track this?
 		unsigned int iStringTableOffset;
@@ -195,7 +201,8 @@ namespace foolsgoldsource
 	void pfnTraceSphere( const float* v1, const float* v2, int fNoMonsters, float radius, edict_t* pentToSkip, TraceResult* ptr );
 
 	void pfnServerCommand( char* str );
-
+	void pfnServerExecute( void );
+	void pfnClientCommand( edict_t* pEdict, char* szFmt, ... );
 	void pfnParticleEffect( const float* org, const float* dir, float color, float count );
 	void pfnLightStyle( int style, char* val );
 
@@ -208,6 +215,7 @@ namespace foolsgoldsource
 	int pfnAllocString( const char* szValue );
 
 	edict_t* pfnPEntityOfEntOffset( int iEntOffset );
+	int pfnEntOffsetOfPEntity( const edict_t* pEdict );
 
 	edict_t* pfnPEntityOfEntIndex( int iEntIndex );
 	edict_t* pfnFindEntityByVars( struct entvars_s* pvars );
@@ -232,6 +240,8 @@ namespace foolsgoldsource
 	edict_t* pfnPEntityOfEntIndexAllEntities( int iEntIndex );
 
 	// DLL_FUNCTIONS
+	void ClientCommand( edict_t* pEntity );
+
 	void ServerActivate( edict_t* pEdictList, int edictCount, int clientMax );
 
 	// cl_enginefunc_t

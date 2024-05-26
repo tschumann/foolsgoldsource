@@ -22,6 +22,7 @@ namespace foolsgoldsourcetest
 
 		TEST_METHOD_INITIALIZE(SetUp)
 		{
+			::foolsgoldsource::gEngine.Reset();
 			::foolsgoldsource::gEngine.SetIsFogOn( false );
 			::foolsgoldsource::gEngine.SetRenderer( RENDERER_OPENGL );
 		}
@@ -54,6 +55,28 @@ namespace foolsgoldsourcetest
 			Assert::IsTrue( pEdict1 != ::foolsgoldsource::pfnFindEntityByVars( &pEdict3->v ) );
 			Assert::IsTrue( pEdict2 != ::foolsgoldsource::pfnFindEntityByVars( &pEdict3->v ) );
 			Assert::IsTrue( pEdict3 == ::foolsgoldsource::pfnFindEntityByVars( &pEdict3->v ) );
+		}
+
+		TEST_METHOD(TestServerCommand)
+		{
+			::foolsgoldsource::pfnServerCommand("exec config.cfg");
+			Assert::AreEqual((size_t)1, ::foolsgoldsource::gEngine.executedServerCommands.size());
+			Assert::AreEqual("exec config.cfg", ::foolsgoldsource::gEngine.executedServerCommands.back().c_str());
+
+			::foolsgoldsource::pfnServerCommand("exec map.cfg");
+			Assert::AreEqual((size_t)2, ::foolsgoldsource::gEngine.executedServerCommands.size());
+			Assert::AreEqual("exec map.cfg", ::foolsgoldsource::gEngine.executedServerCommands.back().c_str());
+		}
+
+		TEST_METHOD(TestClientCommand)
+		{
+			::foolsgoldsource::pfnClientCommand(nullptr, "exec config.cfg");
+			Assert::AreEqual((size_t)1, ::foolsgoldsource::gEngine.executedClientCommands.size());
+			Assert::AreEqual("exec config.cfg", ::foolsgoldsource::gEngine.executedClientCommands.back().c_str());
+
+			::foolsgoldsource::pfnClientCommand(nullptr, "changeteam");
+			Assert::AreEqual((size_t)2, ::foolsgoldsource::gEngine.executedClientCommands.size());
+			Assert::AreEqual("changeteam", ::foolsgoldsource::gEngine.executedClientCommands.back().c_str());
 		}
 
 		TEST_METHOD(TestGetGameDir)

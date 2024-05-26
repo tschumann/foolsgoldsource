@@ -21,6 +21,7 @@ namespace foolsgoldsource
 		engineType( EngineType::ENGINE_25ANNIVERSARY ),
 		bIsDedicatedServer( false ),
 		bIsCareerMatch( false ),
+		iCallsToClientCommand( 0 ),
 #ifdef CLIENT_DLL
 		triCullStyle( TRI_FRONT ),
 #endif // CLIENT_DLL
@@ -57,6 +58,8 @@ namespace foolsgoldsource
 		this->engineFunctions.pfnEmitAmbientSound = pfnEmitAmbientSound;
 		this->engineFunctions.pfnTraceSphere = pfnTraceSphere;
 		this->engineFunctions.pfnServerCommand = pfnServerCommand;
+		this->engineFunctions.pfnServerExecute = pfnServerExecute;
+		this->engineFunctions.pfnClientCommand = pfnClientCommand;
 		this->engineFunctions.pfnParticleEffect = pfnParticleEffect;
 		this->engineFunctions.pfnLightStyle = pfnLightStyle;
 		this->engineFunctions.pfnRandomLong = pfnRandomLong;
@@ -64,6 +67,7 @@ namespace foolsgoldsource
 		this->engineFunctions.pfnPvAllocEntPrivateData = pfnPvAllocEntPrivateData;
 		this->engineFunctions.pfnAllocString = pfnAllocString;
 		this->engineFunctions.pfnPEntityOfEntOffset = pfnPEntityOfEntOffset;
+		this->engineFunctions.pfnEntOffsetOfPEntity = pfnEntOffsetOfPEntity;
 		this->engineFunctions.pfnPEntityOfEntIndex = pfnPEntityOfEntIndex;
 		this->engineFunctions.pfnFindEntityByVars = pfnFindEntityByVars;
 		this->engineFunctions.pfnGetModelPtr = pfnGetModelPtr;
@@ -79,6 +83,7 @@ namespace foolsgoldsource
 		this->engineFunctions.pfnCheckParm = pfnCheckParm;
 		this->engineFunctions.pfnPEntityOfEntIndexAllEntities = pfnPEntityOfEntIndexAllEntities;
 
+		this->dllFunctions.pfnClientCommand = ClientCommand;
 		this->dllFunctions.pfnServerActivate = ServerActivate;
 
 #ifdef CLIENT_DLL
@@ -160,6 +165,14 @@ namespace foolsgoldsource
 		}
 	}
 
+	void Engine::Reset()
+	{
+		this->executedClientCommands.clear();
+		this->executedServerCommands.clear();
+
+		this->iCallsToClientCommand = 0;
+	}
+
 	const enginefuncs_t Engine::GetServerEngineFunctions() const
 	{
 		return this->engineFunctions;
@@ -170,9 +183,9 @@ namespace foolsgoldsource
 		return this->globalVariables;
 	}
 
-	const DLL_FUNCTIONS Engine::GetDLLFunctions() const
+	const DLL_FUNCTIONS *Engine::GetDLLFunctions() const
 	{
-		return this->dllFunctions;
+		return &this->dllFunctions;
 	}
 
 	const NEW_DLL_FUNCTIONS Engine::GetNewDLLFunctions() const
@@ -438,7 +451,24 @@ namespace foolsgoldsource
 
 	void pfnServerCommand( char* str )
 	{
-		gEngine.serverCommands.push_back( string(str) );
+		gEngine.executedServerCommands.push_back( string(str) );
+	}
+
+	void pfnServerExecute( void )
+	{
+		// TODO: what does this do?
+	}
+
+	void pfnClientCommand( edict_t* pEdict, char* szFmt, ... )
+	{
+		va_list argptr;
+		char buffer[1024];
+
+		va_start(argptr, szFmt);
+		vsprintf(buffer, szFmt, argptr);
+		va_end(argptr);
+
+		gEngine.executedClientCommands.push_back( string(buffer) );
 	}
 
 	void pfnParticleEffect( const float* org, const float* dir, float color, float count )
@@ -501,6 +531,12 @@ namespace foolsgoldsource
 		{
 			return gEngine.edicts[iEntOffset].get();
 		}
+	}
+
+	int pfnEntOffsetOfPEntity( const edict_t* pEdict )
+	{
+		// TODO: what is this function meant to return?
+		return 1;
 	}
 
 	edict_t* pfnPEntityOfEntIndex( int iEntIndex )
@@ -629,6 +665,11 @@ namespace foolsgoldsource
 		}
 
 		return result;
+	}
+
+	void ClientCommand( edict_t* pEntity )
+	{
+		gEngine.iCallsToClientCommand++;
 	}
 
 	void ServerActivate( edict_t* pEdictList, int edictCount, int clientMax )
