@@ -26,6 +26,10 @@ namespace foolsgoldsource
 		bIsFogOn( false ),
 		iRenderer( RENDERER_SOFTWARE )
 	{
+		memset(&this->engineFunctions, 0, sizeof(enginefuncs_t));
+		memset(&this->dllFunctions, 0, sizeof(DLL_FUNCTIONS));
+		memset(&this->newDllFunctions, 0, sizeof(NEW_DLL_FUNCTIONS));
+
 		// set up all the engine functions so they can be used
 		this->engineFunctions.pfnPrecacheModel = pfnPrecacheModel;
 		this->engineFunctions.pfnPrecacheSound = pfnPrecacheSound;
