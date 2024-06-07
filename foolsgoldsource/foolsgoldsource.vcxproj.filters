@@ -21,6 +21,9 @@
     <ClCompile Include="..\foolsgoldsource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vgui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\foolsgoldsource.h">

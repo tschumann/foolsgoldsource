@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClCompile Include="..\foolsgoldsource.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="vgui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\foolsgoldsource.h" />
