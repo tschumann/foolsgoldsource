@@ -39,6 +39,8 @@ const int RENDERER_OPENGL = 1;
 
 namespace foolsgoldsource
 {
+	typedef void (*commandFunction)(void);
+
 	struct event_t
 	{
 		unsigned short iIndex;
@@ -50,7 +52,7 @@ namespace foolsgoldsource
 	{
 		unsigned int iIndex;
 		string strCommandName;
-		void* pfnFunction;
+		commandFunction pfnFunction;
 	};
 
 	struct userMessage_t

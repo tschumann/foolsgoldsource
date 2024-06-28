@@ -5,9 +5,12 @@
 // $NoKeywords: $
 //================================================================================
 
-#define CLIENT_DLL
-
 #include "../foolsgoldsource.h"
+
+#ifdef CLIENT_DLL
+cl_enginefunc_t gEngfuncs;
+engine_studio_api_t IEngineStudio;
+#endif // CLIENT_DLL
 
 enginefuncs_t g_engfuncs;
 globalvars_t* gpGlobals;

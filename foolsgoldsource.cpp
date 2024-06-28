@@ -695,7 +695,9 @@ namespace foolsgoldsource
 		clientCommand_t clientCommand;
 		clientCommand.iIndex = gEngine.userMessages.size();
 		clientCommand.strCommandName = string(cmd_name);
+#ifdef CLIENT_DLL
 		clientCommand.pfnFunction = pfnEngSrc_function;
+#endif // CLIENT_DLL
 
 		gEngine.clientCommands.push_back(clientCommand);
 
