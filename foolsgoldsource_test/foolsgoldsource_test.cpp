@@ -8,8 +8,6 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 
-#define CLIENT_DLL
-
 #include "../foolsgoldsource.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
