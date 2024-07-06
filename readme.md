@@ -26,8 +26,10 @@ How it works
 
 Testing
 -------
+Open "Developer Powershell for VS"
 ```
-powershell ./test.ps1
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
+./test.ps1
 ```
 
 
