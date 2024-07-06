@@ -1,6 +1,6 @@
 //========= Copyright © 2008-2024, Team Sandpit, All rights reserved. ============
 //
-// Purpose: Stub VGUI for 64-bit compilation
+// Purpose: Fake VGUI for 64-bit compilation
 //
 // $NoKeywords: $
 //================================================================================

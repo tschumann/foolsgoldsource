@@ -1,6 +1,6 @@
 //========= Copyright © 2008-2023, Team Sandpit, All rights reserved. ============
 //
-// Purpose: Mock GoldSource engine tests
+// Purpose: Fake GoldSource engine tests
 //
 // $NoKeywords: $
 //================================================================================

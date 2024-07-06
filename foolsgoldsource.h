@@ -1,12 +1,12 @@
 //========= Copyright © 2008-2023, Team Sandpit, All rights reserved. ============
 //
-// Purpose: Mock GoldSource engine definitions
+// Purpose: Fake GoldSource engine definitions
 //
 // $NoKeywords: $
 //================================================================================
 
-#ifndef _STUB_ENGINE_H_
-#define _STUB_ENGINE_H_
+#ifndef _FOOLSGOLDSOURCE_H_
+#define _FOOLSGOLDSOURCE_H_
 
 #include <cstring>
 #include <cctype>
@@ -282,4 +282,4 @@ namespace foolsgoldsource
 	int IsHardware( void );
 }
 
-#endif // _STUB_ENGINE_H_
+#endif // _FOOLSGOLDSOURCE_H_

@@ -1,6 +1,6 @@
 Fool's GoldSource
 =================
-Mock GoldSource engine for unit testing Half-Life mods and plugins.
+Fake GoldSource engine for unit testing Half-Life mods and plugins.
 
 The implementation is in `foolsgoldsource.cpp` with `foolsgoldsource/hlsdk` containing the required headers definitions from the Half-Life SDK (with minimal changes to avoid having to recreate the whole directory structure).
 

@@ -1,6 +1,6 @@
 //========= Copyright © 2008-2023, Team Sandpit, All rights reserved. ============
 //
-// Purpose: Mock GoldSource engine implementation
+// Purpose: Fake GoldSource engine implementation
 //
 // $NoKeywords: $
 //================================================================================
@@ -285,9 +285,9 @@ namespace foolsgoldsource
 		return lowerCased;
 	}
 
-	/////////////////////////////////
-	// Stubbed enginefuncs_t below //
-	/////////////////////////////////
+	//////////////////////////////
+	// Fake enginefuncs_t below //
+	//////////////////////////////
 
 	int pfnPrecacheModel(char* s)
 	{
@@ -667,6 +667,10 @@ namespace foolsgoldsource
 		return result;
 	}
 
+	//////////////////////////////
+	// Fake DLL_FUNCTIONS below //
+	//////////////////////////////
+
 	void ClientCommand( edict_t* pEntity )
 	{
 		gEngine.iCallsToClientCommand++;
@@ -675,6 +679,10 @@ namespace foolsgoldsource
 	void ServerActivate( edict_t* pEdictList, int edictCount, int clientMax )
 	{
 	}
+
+	////////////////////////////////
+	// Fake cl_enginefunc_t below //
+	////////////////////////////////
 
 	struct cvar_s* pfnRegisterVariable( char* szName, char* szValue, int flags )
 	{
@@ -775,6 +783,10 @@ namespace foolsgoldsource
 	void FogParams( float flDensity, int iFogSkybox )
 	{
 	}
+
+	////////////////////////////////////
+	// Fake engine_studio_api_t below //
+	////////////////////////////////////
 
 	struct model_s* GetChromeSprite( void )
 	{
