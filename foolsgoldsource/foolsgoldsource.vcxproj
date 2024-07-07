@@ -138,9 +138,6 @@
   <ItemGroup>
     <ClInclude Include="..\foolsgoldsource.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Library Include="hlsdk\vgui.lib" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
