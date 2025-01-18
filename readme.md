@@ -26,7 +26,7 @@ How it works
 
 Testing
 -------
-Open "Developer Powershell for VS"
+Open "Developer Powershell for VS" (first line may not be needed)
 ```
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
 ./test.ps1
@@ -36,3 +36,5 @@ Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
 License
 -------
 The code in `foolsgoldsource/hlsdk` is from https://github.com/ValveSoftware/halflife and is covered by the license at https://github.com/ValveSoftware/halflife/blob/master/LICENSE
+
+The files comes from `common/`, `engine/`, `public/` and `utils/vgui/include/`
