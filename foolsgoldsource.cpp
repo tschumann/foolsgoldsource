@@ -446,7 +446,10 @@ namespace foolsgoldsource
 
 	void pfnTraceSphere( const float* v1, const float* v2, int fNoMonsters, float radius, edict_t* pentToSkip, TraceResult* ptr )
 	{
-		fprintf( stderr, "Not implemented\n" );
+		fprintf( stderr, "pfnTraceSphere is not implemented\n" );
+
+		// NOTE: causes the engine to exit, so do the same here to discourage use
+		exit( 1 );
 	}
 
 	void pfnServerCommand( char* str )
