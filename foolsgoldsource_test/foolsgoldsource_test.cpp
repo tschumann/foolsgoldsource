@@ -87,6 +87,11 @@ namespace foolsgoldsourcetest
 
 			::foolsgoldsource::pfnGetGameDir( szGameDirectory );
 			Assert::AreEqual( "gearbox", szGameDirectory );
+
+			::foolsgoldsource::gEngine.SetGameDirectory("rewolf");
+
+			::foolsgoldsource::pfnGetGameDir( szGameDirectory );
+			Assert::AreEqual( "rewolf", szGameDirectory );
 		}
 
 		TEST_METHOD(TestGetCvarPointer)
