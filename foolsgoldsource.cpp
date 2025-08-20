@@ -140,7 +140,7 @@ namespace foolsgoldsource
 			this->edicts.push_back(edict);
 		}
 
-		this->strGameDir = "valve";
+		this->SetGameDirectory( "valve" );
 
 		this->iMaxEdicts = 1024;
 
@@ -595,7 +595,7 @@ namespace foolsgoldsource
 
 	void pfnGetGameDir( char *szGetGameDir )
 	{
-		strncpy( szGetGameDir, gEngine.GetGameDirectory().c_str(), gEngine.GetGameDirectory().size() );
+		strncpy( szGetGameDir, gEngine.GetGameDirectory().c_str(), gEngine.GetGameDirectory().size() + 1 );
 	}
 
 	int pfnIsDedicatedServer( void )
