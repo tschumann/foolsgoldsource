@@ -120,33 +120,7 @@ namespace foolsgoldsource
 		::IEngineStudio = this->engineStudioFunctions;
 #endif // CLIENT_DLL
 
-		// initialise the engine variables
-		this->globalVariables.maxClients = 32;
 		this->globalVariables.pStringBase = new char[Engine::iStringTableSize];
-		memset( const_cast<char*>(this->globalVariables.pStringBase), 0, Engine::iStringTableSize );
-		// start allocating at offset 1 so that checks against string_t with value 0 work
-		// TODO: is this how the engine works?
-		this->iStringTableOffset = 1;
-
-		// TODO: is edict_t* 0 is worldspawn?
-		for( int i = 0; i <= this->globalVariables.maxClients; i++ )
-		{
-			// TODO: player spawning should happen later - and call one of the server-side callbacks?
-			shared_ptr<edict_t> edict = std::make_shared<edict_t>();
-			edict->free = 0;
-			edict->v.classname = ALLOC_STRING("player");
-			edict->v.netname = 0;
-			edict->v.flags = FL_CLIENT;
-			this->edicts.push_back(edict);
-		}
-
-		this->SetGameDirectory( "valve" );
-
-		this->iMaxEdicts = 1024;
-
-		pfnRegisterVariable( const_cast<char *>("cl_himodels"), const_cast<char *>("0"), 0 );
-		pfnRegisterVariable( const_cast<char *>("developer"), const_cast<char *>("1"), 0 );
-		pfnRegisterVariable( const_cast<char *>("r_drawentities"), const_cast<char *>("1"), 0 );
 	}
 
 	Engine::~Engine() noexcept
@@ -165,12 +139,59 @@ namespace foolsgoldsource
 		}
 	}
 
-	void Engine::Reset()
+	/// <summary>
+	/// Clear everything back to a known good state. Ideally we'd just initialise a new Engine class per-test but the way this has
+	/// all been architected is to have a global engine that a bunch of functions can call back to.
+	/// </summary>
+	void Engine::Initialise()
 	{
+		this->edicts.clear();
+		this->models.clear();
+		this->sounds.clear();
+		this->events.clear();
+
 		this->executedClientCommands.clear();
 		this->executedServerCommands.clear();
 
+		for (size_t i = 0; i < this->clientCvars.size(); i++)
+		{
+			shared_ptr<cvar_t> cvar = this->clientCvars[i];
+
+			delete[] cvar->name;
+		}
+
+		this->clientCvars.clear();
+		this->clientCommands.clear();
+		this->userMessages.clear();
+
 		this->iCallsToClientCommand = 0;
+
+		this->globalVariables.maxClients = 32;
+
+		memset(const_cast<char*>(this->globalVariables.pStringBase), 0, Engine::iStringTableSize);
+		// start allocating at offset 1 so that checks against string_t with value 0 work
+		// TODO: is this how the engine works?
+		this->iStringTableOffset = 1;
+
+		this->SetGameDirectory("valve");
+
+		this->iMaxEdicts = 1024;
+
+		// TODO: is edict_t* 0 is worldspawn?
+		for (int i = 0; i <= this->globalVariables.maxClients; i++)
+		{
+			// TODO: player spawning should happen later - and call one of the server-side callbacks?
+			shared_ptr<edict_t> edict = std::make_shared<edict_t>();
+			edict->free = 0;
+			edict->v.classname = ALLOC_STRING("player");
+			edict->v.netname = 0;
+			edict->v.flags = FL_CLIENT;
+			this->edicts.push_back(edict);
+		}
+
+		pfnRegisterVariable(const_cast<char*>("cl_himodels"), const_cast<char*>("0"), 0);
+		pfnRegisterVariable(const_cast<char*>("developer"), const_cast<char*>("1"), 0);
+		pfnRegisterVariable(const_cast<char*>("r_drawentities"), const_cast<char*>("1"), 0);
 	}
 
 	const enginefuncs_t Engine::GetServerEngineFunctions() const

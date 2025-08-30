@@ -20,7 +20,7 @@ namespace foolsgoldsourcetest
 
 		TEST_METHOD_INITIALIZE(SetUp)
 		{
-			::foolsgoldsource::gEngine.Reset();
+			::foolsgoldsource::gEngine.Initialise();
 			::foolsgoldsource::gEngine.SetIsFogOn( false );
 			::foolsgoldsource::gEngine.SetRenderer( RENDERER_OPENGL );
 		}

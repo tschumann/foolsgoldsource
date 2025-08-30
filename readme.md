@@ -16,7 +16,7 @@ git submodule add https://github.com/tschumann/foolsgoldsource
 
 Then include `foolsgoldsource.cpp` and `foolsgoldsource.h` as part of the project.
 
-Include `foolsgoldsource.h` in your test files, and if you don't have a separate unit test project and are using Visual Studio C++ Unit tests you can include `vscu_test.h` as well to allow the tests to be run without breaking the .dll file.
+Include `foolsgoldsource.h` in your test files, and if you don't have a separate unit test project and are using Visual Studio C++ Unit tests you can include `vscu_test.h` as well to allow the tests to be run without breaking the .dll file. Call `foolsgoldsource::gEngine.Initialise()` to set the fake engine to a clean state that is ready for use.
 
 
 How it works

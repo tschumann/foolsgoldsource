@@ -84,7 +84,7 @@ namespace foolsgoldsource
 		Engine();
 		~Engine() noexcept;
 
-		void Reset();
+		void Initialise();
 
 		const enginefuncs_t GetServerEngineFunctions() const;
 		const globalvars_t GetServerGlobalVariables() const;
